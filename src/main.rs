@@ -11,46 +11,69 @@ struct Opt {
     work_interval: u64,
     #[clap(default_value = "5")]
     short_break: u64,
+    #[clap(default_value = "20")]
+    long_break: u64,
+    #[clap(default_value = "4")]
+    long_break_interval: u64,
+}
+
+struct Interval {
+    name: &'static str,
+    color: &'static str,
+    duration: u64,
+    message_done: &'static str,
 }
 
 fn main() {
     let opt = Opt::parse();
     println!("Work interval: {} minute(s)", opt.work_interval);
     println!("Short break: {} minute(s)", opt.short_break);
+    println!("Long break: {} minute(s)", opt.long_break);
+    println!("Long break interval: {} work intervals", opt.long_break_interval);
+    println!("Press Ctrl+C to stop the timer\n");
 
+    let mut long_break_counter = 0;
     loop {
-        work_interval(opt.work_interval);
-        break_interval(opt.short_break);
+        execute_interval(Interval {
+            name: "Work",
+            color: "blue",
+            duration: opt.work_interval,
+            message_done: "Well done!",
+        });
+        long_break_counter += 1;
+        if long_break_counter == opt.long_break_interval {
+            execute_interval(Interval {
+                name: "Long break",
+                color: "green",
+                duration: opt.long_break,
+                message_done: "Move on!",
+            });
+            long_break_counter = 0;
+        } else {
+            execute_interval(Interval {
+                name: "Short break",
+                color: "yellow",
+                duration: opt.short_break,
+                message_done: "Back to work!",
+            });
+        }
     }
 }
 
-fn work_interval(work_interval: u64) {
-    let seconds = work_interval * 60;
+fn execute_interval(
+    Interval {
+        name,
+        color,
+        duration,
+        message_done,
+    }: Interval,
+) {
+    let seconds = duration * 60;
     let bar = ProgressBar::new(seconds);
-    bar.set_prefix(format!("{: >10}", "Work"));
+    bar.set_prefix(format!("{: >15}", name));
     bar.set_style(
         ProgressStyle::default_bar()
-            .template("{prefix} {bar:50.blue/gray} {msg}")
-            .unwrap(),
-    );
-    for _ in 0..seconds {
-        bar.inc(1);
-        let left = seconds_to_minutes_seconds(seconds - bar.position());
-        bar.set_message(left + " left");
-        thread::sleep(Duration::from_secs(1));
-    }
-    bar.set_message("Well done!");
-    bar.finish();
-    play_sound();
-}
-
-fn break_interval(short_break: u64) {
-    let seconds = short_break * 60;
-    let bar = ProgressBar::new(seconds);
-    bar.set_prefix(format!("{: >10}", "Break"));
-    bar.set_style(
-        ProgressStyle::default_bar()
-            .template("{prefix} {bar:50.red/gray} {msg}")
+            .template(format!("{{prefix}} {{bar:50.{color}/gray}} {{msg}}").as_str())
             .unwrap(),
     );
     for _ in 0..seconds {
@@ -59,7 +82,7 @@ fn break_interval(short_break: u64) {
         bar.set_message(left + " left");
         thread::sleep(Duration::from_millis(1000));
     }
-    bar.set_message("Time to work!");
+    bar.set_message(message_done);
     bar.finish();
     play_sound();
 }
