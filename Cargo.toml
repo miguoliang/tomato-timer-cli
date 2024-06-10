@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-ansi_term = "0.12.1"
 clap = { version = "4.5.6", features = ["derive"] }
 indicatif = { version = "0.17.8", features = ["rayon"] }
 rodio = "0.18.1"
+termion = "4.0.0"

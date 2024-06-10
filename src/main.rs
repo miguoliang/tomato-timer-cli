@@ -2,8 +2,10 @@ use clap::Parser;
 use indicatif::{ProgressBar, ProgressStyle};
 use rodio::Source;
 use rodio::{source::SineWave, Sink};
+use std::io::{self, stdout, Read, Write};
 use std::thread;
 use std::time::Duration;
+use termion::raw::IntoRawMode;
 
 #[derive(Parser)]
 struct Opt {
@@ -29,7 +31,10 @@ fn main() {
     println!("Work interval: {} minute(s)", opt.work_interval);
     println!("Short break: {} minute(s)", opt.short_break);
     println!("Long break: {} minute(s)", opt.long_break);
-    println!("Long break interval: {} work intervals", opt.long_break_interval);
+    println!(
+        "Long break interval: {} work intervals",
+        opt.long_break_interval
+    );
     println!("Press Ctrl+C to stop the timer\n");
 
     let mut long_break_counter = 0;
@@ -81,6 +86,15 @@ fn execute_interval(
         let left = seconds_to_minutes_seconds(seconds - bar.position());
         bar.set_message(left + " left");
         thread::sleep(Duration::from_millis(1000));
+
+        // // Handle the case where the user stops the timer
+        // if let Ok(key) = get_user_input() {
+        //     if key == 'c' {
+        //         bar.finish();
+        //         println!("Timer stopped by user");
+        //         return;
+        //     }
+        // }
     }
     bar.set_message(message_done);
     bar.finish();
@@ -116,4 +130,18 @@ fn play_sound() {
 
     // Sleep for the duration of the sound
     thread::sleep(Duration::from_secs(1));
+}
+
+fn get_user_input() -> Result<char, std::io::Error> {
+    // Disable terminal echo
+    let mut mode = stdout().into_raw_mode()?;
+
+    // Get a single keystroke
+    let mut input = [0; 1];
+    io::stdin().read_exact(&mut input)?;
+
+    // Restore terminal echo
+    mode.flush()?;
+
+    Ok(input[0] as char)
 }
