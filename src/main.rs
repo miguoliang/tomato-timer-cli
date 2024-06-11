@@ -9,13 +9,13 @@ use termion::raw::IntoRawMode;
 
 #[derive(Parser)]
 struct Opt {
-    #[clap(default_value = "25")]
+    #[arg(short, long, default_value = "25")]
     work_interval: u64,
-    #[clap(default_value = "5")]
+    #[arg(short, long, default_value = "5")]
     short_break: u64,
-    #[clap(default_value = "20")]
+    #[arg(short = 'L', long, default_value = "20")]
     long_break: u64,
-    #[clap(default_value = "4")]
+    #[arg(short = 'I', long, default_value = "4")]
     long_break_interval: u64,
 }
 
@@ -86,15 +86,11 @@ fn execute_interval(
         let left = seconds_to_minutes_seconds(seconds - bar.position());
         bar.set_message(left + " left");
         thread::sleep(Duration::from_millis(1000));
-
-        // // Handle the case where the user stops the timer
-        // if let Ok(key) = get_user_input() {
-        //     if key == 'c' {
-        //         bar.finish();
-        //         println!("Timer stopped by user");
-        //         return;
-        //     }
-        // }
+        if let Ok(input) = get_user_input() {
+            if input == '\u{3}' {
+                break;
+            }
+        }
     }
     bar.set_message(message_done);
     bar.finish();
