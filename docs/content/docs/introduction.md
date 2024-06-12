@@ -20,3 +20,4 @@ Features:
 - Receive notifications when a pomodoro or break ends
 
 To get started, follow the installation instructions below.
+
