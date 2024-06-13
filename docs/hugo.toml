@@ -1,7 +1,11 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://miguoliang.github.io/tomato-clock-cli/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'Tomato Clock CLI'
 theme = 'hugo-book'
+
+[params]
+  bookFavicon = 'favicon.ico'
+  bookLogo = 'logo.png'
 
 [markup.goldmark.renderer]
   unsafe = true
