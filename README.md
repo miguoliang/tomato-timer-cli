@@ -1,8 +1,15 @@
 # Tomato Timer CLI
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=miguoliang_tomato-clock-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=miguoliang_tomato-clock-cli)
+
+<img src="https://miguoliang.github.io/tomato-clock-cli/logo.png" alt="Tomato Clock CLI" height="100px">
+
+---
+
 The Tomato Timer CLI is a command-line tool designed to help you manage your time effectively using the Pomodoro Technique. With this tool, you can break your work into focused intervals called "pomodoros" and take short breaks in between. This technique helps improve productivity and maintain focus throughout your work sessions.
 
 Features:
+
 - Start and stop pomodoro sessions
 - Set custom durations for pomodoros and breaks
 - Track your progress with a visual timer
