@@ -5,6 +5,7 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 ## [0.1.0] - 2024-06-13
 
 ### Added
+
 - Start and stop pomodoro sessions
 - Set custom durations for pomodoros and breaks
 - Track your progress with a visual timer

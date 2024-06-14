@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in the Tomato Clock CLI project, please report it to our security team at boymgl@qq.com. We take security issues seriously and appreciate your efforts in responsibly disclosing any vulnerabilities.
+If you discover a security vulnerability in the Tomato Clock CLI project, please report it to our security team at <boymgl@qq.com>. We take security issues seriously and appreciate your efforts in responsibly disclosing any vulnerabilities.
 
 ## Supported Versions
 
@@ -12,7 +12,7 @@ The following versions of Tomato Clock CLI are currently supported with security
 
 ## Vulnerability Disclosure Process
 
-Once a vulnerability is reported, our security team will investigate and assess the impact. We will work diligently to address the issue and develop a fix. 
+Once a vulnerability is reported, our security team will investigate and assess the impact. We will work diligently to address the issue and develop a fix.
 
 If the vulnerability is confirmed, we will follow these steps:
 
@@ -31,4 +31,4 @@ We kindly request that you refrain from publicly disclosing any vulnerabilities 
 
 ## Contact
 
-If you have any questions or concerns regarding the security of Tomato Clock CLI, please contact our security team at boymgl@qq.com.
+If you have any questions or concerns regarding the security of Tomato Clock CLI, please contact our security team at <boymgl@qq.com>.
