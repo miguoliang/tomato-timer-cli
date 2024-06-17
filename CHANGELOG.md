@@ -15,6 +15,27 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 
 ## v0.1.0 (2024-06-17)
 
+<csr-id-12790a00cb1dc328837701f1e8ace4143a96273b/>
+<csr-id-d302a0c372677d834b5f3398aa14311f78e4518e/>
+<csr-id-64402904c24b7d401c19722075f8d33aa38fef46/>
+<csr-id-88487a27a237562a97fd25eecbcc7b017bf7c976/>
+<csr-id-14d9d8d987908dd637b9ebf54501e8ad60a80e6b/>
+<csr-id-795cd5090cb513e7528178141ae6d99515ee2914/>
+<csr-id-20f9cb6a4b3f72ebfb74d8aa4baad6723a8a3d01/>
+<csr-id-c1da29015d671b7af3e35db17fb6eef7db2899e4/>
+<csr-id-7bebfe8b62e789afe0a1bfec5d5cf0f0515db88e/>
+<csr-id-444e7e0badf8a285c843c092e72bc85796ee5de9/>
+<csr-id-490566706326c8b44d291b0191f9cc27ab660ef5/>
+<csr-id-f1b9f8769b96b8929144babe1c6f6281aafe537f/>
+<csr-id-bb7c19417d3df0f79b02f541e5afdaa6d89e8b79/>
+<csr-id-b4a2d35169c19671ee0cc166a1579e47a87ed2e7/>
+<csr-id-70175ebb16b2c4946c57ebf7d45c5b31055c8729/>
+<csr-id-794b24974cb867b2d9dfbea22060be846f832bde/>
+<csr-id-46744bac17a607fdb74030a4795c76649ed5f404/>
+<csr-id-3c9b9d33a912916c0cc8e35b7744358b29168569/>
+<csr-id-e282ddfdd139d2fe19510fae41562bb3df6a7b53/>
+<csr-id-1844ee8396ac65fe6de58ecfe924219182dddc47/>
+
 ### Chore
 
  - <csr-id-12790a00cb1dc328837701f1e8ace4143a96273b/> Update email addresses in code of conduct and security files
@@ -46,7 +67,7 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 
 <csr-read-only-do-not-edit/>
 
- - 24 commits contributed to the release over the course of 5 calendar days.
+ - 25 commits contributed to the release over the course of 8 calendar days.
  - 20 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -57,6 +78,7 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release tomato-timer-cli v0.1.0 ([`cb597e5`](https://github.com/miguoliang/tomato-clock-cli/commit/cb597e52fdd4538db94630ee2826b07ed07a8f6a))
     - Update email addresses in code of conduct and security files ([`12790a0`](https://github.com/miguoliang/tomato-clock-cli/commit/12790a00cb1dc328837701f1e8ace4143a96273b))
     - Update CONTRIBUTING.md with a more detailed contributing guide ([`d302a0c`](https://github.com/miguoliang/tomato-clock-cli/commit/d302a0c372677d834b5f3398aa14311f78e4518e))
     - Update markdownlint configuration to disable specific rules ([`6440290`](https://github.com/miguoliang/tomato-clock-cli/commit/64402904c24b7d401c19722075f8d33aa38fef46))
