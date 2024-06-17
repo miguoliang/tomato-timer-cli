@@ -67,7 +67,7 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 
 <csr-read-only-do-not-edit/>
 
- - 25 commits contributed to the release over the course of 8 calendar days.
+ - 26 commits contributed to the release over the course of 8 calendar days.
  - 20 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -78,6 +78,7 @@ All notable changes to the `tomato-clock-cli` project will be documented in this
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release tomato-timer-cli v0.1.0 ([`c5355bc`](https://github.com/miguoliang/tomato-clock-cli/commit/c5355bc6ab2efe67c4f93e4249559f115a7fe8af))
     - Release tomato-timer-cli v0.1.0 ([`cb597e5`](https://github.com/miguoliang/tomato-clock-cli/commit/cb597e52fdd4538db94630ee2826b07ed07a8f6a))
     - Update email addresses in code of conduct and security files ([`12790a0`](https://github.com/miguoliang/tomato-clock-cli/commit/12790a00cb1dc328837701f1e8ace4143a96273b))
     - Update CONTRIBUTING.md with a more detailed contributing guide ([`d302a0c`](https://github.com/miguoliang/tomato-clock-cli/commit/d302a0c372677d834b5f3398aa14311f78e4518e))
