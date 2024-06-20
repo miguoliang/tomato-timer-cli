@@ -11,8 +11,8 @@ keywords = [
     "time-management",
     "tomato-timer",
 ]
-repository = "https://github.com/miguoliang/tomato-clock-cli"
-homepage = "https://miguoliang.github.io/tomato-clock-cli/"
+repository = "https://github.com/miguoliang/tomato-timer-cli"
+homepage = "https://miguoliang.github.io/tomato-timer-cli/"
 readme = "README.md"
 categories = ["command-line-utilities"]
 
