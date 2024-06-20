@@ -13,6 +13,8 @@ use termion::input::{Keys, TermRead};
 use termion::raw::IntoRawMode;
 use termion::AsyncReader;
 
+const TIMER_INTERVAL: u64 = 50;
+
 #[derive(Parser)]
 struct Opt {
     #[arg(short, long, default_value = "25")]
@@ -41,13 +43,27 @@ fn main() {
         "Long break interval: {} work intervals",
         opt.long_break_interval
     );
-    println!("Press Ctrl+C or q to stop the timer\n");
+
+    println!("");
+    println!(
+        "Press {}Ctrl+C{} or {}Q{} to stop the timer",
+        termion::style::Bold,
+        termion::style::Reset,
+        termion::style::Bold,
+        termion::style::Reset,
+    );
+    println!(
+        "Press {}P{} to pause or resume a timer\n",
+        termion::style::Bold,
+        termion::style::Reset,
+    );
+    println!("");
 
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || loop {
         let now = Utc::now();
         tx.send(now).unwrap();
-        std::thread::sleep(Duration::from_millis(50));
+        std::thread::sleep(Duration::from_millis(TIMER_INTERVAL));
     });
 
     let cycle = build_cycle(opt);
@@ -56,9 +72,8 @@ fn main() {
 
     let mut stdin = termion::async_stdin().keys();
 
-    let mut start_timestamp = Utc::now();
     for interval in cycle.iter().cycle() {
-        if run_interval(interval, &rx, &mut start_timestamp, &mut stdin).is_err() {
+        if run_interval(interval, &rx, &mut stdin).is_err() {
             stdout.flush().unwrap();
             drop(stdout);
             exit(0);
@@ -98,13 +113,14 @@ fn build_cycle(opt: Opt) -> Vec<Interval> {
 fn run_interval(
     interval: &Interval,
     rx: &Receiver<DateTime<Utc>>,
-    start_timestamp: &mut DateTime<Utc>,
     stdin: &mut Keys<AsyncReader>,
 ) -> Result<(), &'static str> {
     let len = interval.duration * 60;
+    let mut start_timestamp = Utc::now();
+    let mut paused = false;
     let bar = ProgressBar::new(len);
     let template = format!(
-        "{{prefix}} [{{bar:40.{fg}/{bg}}}] {{msg}}",
+        "{{prefix}} [{{bar:60.{fg}/{bg}}}] {{msg}}",
         fg = interval.foreground_color,
         bg = interval.background_color
     );
@@ -123,10 +139,25 @@ fn run_interval(
                     bar.finish();
                     return Err("User interrupted");
                 }
+                termion::event::Key::Char('p') => {
+                    paused = !paused;
+                }
                 _ => {}
             }
         }
-        let pos = (recv - *start_timestamp).num_seconds() as u64;
+
+        if paused {
+            start_timestamp += Duration::from_millis(TIMER_INTERVAL);
+            bar.set_message(format!(
+                "{}{}Paused{}",
+                termion::style::Bold,
+                termion::color::Fg(termion::color::Red),
+                termion::style::Reset
+            ));
+            continue;
+        }
+
+        let pos = (recv - start_timestamp).num_seconds() as u64;
         bar.set_position(pos);
         bar.set_message(format!("remaining {}", format_interval(len - pos)));
 
