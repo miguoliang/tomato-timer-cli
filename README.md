@@ -2,7 +2,7 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=miguoliang_tomato-clock-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=miguoliang_tomato-clock-cli)
 
-<img src="https://miguoliang.github.io/tomato-clock-cli/logo.png" alt="Tomato Clock CLI" height="100px">
+<img src="https://miguoliang.github.io/tomato-timer-cli/logo.png" alt="Tomato Timer CLI" height="100px">
 
 ---
 
