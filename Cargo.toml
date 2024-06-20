@@ -17,6 +17,7 @@ readme = "README.md"
 categories = ["command-line-utilities"]
 
 [dependencies]
+chrono = "0.4.38"
 clap = { version = "4.5.6", features = ["derive"] }
 indicatif = { version = "0.17.8", features = ["rayon"] }
 rodio = "0.18.1"

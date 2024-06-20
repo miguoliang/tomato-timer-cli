@@ -1,11 +1,17 @@
+use chrono::{DateTime, Utc};
 use clap::Parser;
 use indicatif::{ProgressBar, ProgressStyle};
 use rodio::Source;
 use rodio::{source::SineWave, Sink};
-use std::io::{self, stdout, Read, Write};
+use std::error::Error;
+use std::io::{stdout, Write};
+use std::process::exit;
+use std::sync::mpsc::Receiver;
 use std::thread;
 use std::time::Duration;
+use termion::input::{Keys, TermRead};
 use termion::raw::IntoRawMode;
+use termion::AsyncReader;
 
 #[derive(Parser)]
 struct Opt {
@@ -20,10 +26,10 @@ struct Opt {
 }
 
 struct Interval {
-    name: &'static str,
-    color: &'static str,
+    label: &'static str,
     duration: u64,
-    message_done: &'static str,
+    foreground_color: &'static str,
+    background_color: &'static str,
 }
 
 fn main() {
@@ -35,87 +41,129 @@ fn main() {
         "Long break interval: {} work intervals",
         opt.long_break_interval
     );
-    println!("Press Ctrl+C to stop the timer\n");
+    println!("Press Ctrl+C or q to stop the timer\n");
 
-    let mut long_break_counter = 0;
-    loop {
-        execute_interval(Interval {
-            name: "Work",
-            color: "blue",
-            duration: opt.work_interval,
-            message_done: "Well done!",
-        });
-        long_break_counter += 1;
-        if long_break_counter == opt.long_break_interval {
-            execute_interval(Interval {
-                name: "Long break",
-                color: "green",
-                duration: opt.long_break,
-                message_done: "Move on!",
-            });
-            long_break_counter = 0;
-        } else {
-            execute_interval(Interval {
-                name: "Short break",
-                color: "yellow",
-                duration: opt.short_break,
-                message_done: "Back to work!",
-            });
+    let (tx, rx) = std::sync::mpsc::channel();
+    std::thread::spawn(move || loop {
+        let now = Utc::now();
+        tx.send(now).unwrap();
+        std::thread::sleep(Duration::from_millis(50));
+    });
+
+    let cycle = build_cycle(opt);
+
+    let mut stdout = stdout().lock().into_raw_mode().unwrap();
+
+    let mut stdin = termion::async_stdin().keys();
+
+    let mut start_timestamp = Utc::now();
+    for interval in cycle.iter().cycle() {
+        if run_interval(interval, &rx, &mut start_timestamp, &mut stdin).is_err() {
+            stdout.flush().unwrap();
+            drop(stdout);
+            exit(0);
         }
     }
 }
 
-fn execute_interval(
-    Interval {
-        name,
-        color,
-        duration,
-        message_done,
-    }: Interval,
-) {
-    let seconds = duration * 60;
-    let bar = ProgressBar::new(seconds);
-    bar.set_prefix(format!("{: >15}", name));
+fn build_cycle(opt: Opt) -> Vec<Interval> {
+    let mut cycle = std::vec::Vec::new();
+    for i in 0..opt.long_break_interval {
+        cycle.push(Interval {
+            label: "Work",
+            duration: opt.work_interval,
+            foreground_color: "blue",
+            background_color: "blue",
+        });
+
+        if i == opt.long_break_interval - 1 {
+            cycle.push(Interval {
+                label: "Long Break",
+                duration: opt.long_break,
+                foreground_color: "orange",
+                background_color: "orange",
+            });
+        } else {
+            cycle.push(Interval {
+                label: "Short Break",
+                duration: opt.short_break,
+                foreground_color: "green",
+                background_color: "green",
+            });
+        }
+    }
+    cycle
+}
+
+fn run_interval(
+    interval: &Interval,
+    rx: &Receiver<DateTime<Utc>>,
+    start_timestamp: &mut DateTime<Utc>,
+    stdin: &mut Keys<AsyncReader>,
+) -> Result<(), &'static str> {
+    let len = interval.duration * 60;
+    let bar = ProgressBar::new(len);
+    let template = format!(
+        "{{prefix}} [{{bar:40.{fg}/{bg}}}] {{msg}}",
+        fg = interval.foreground_color,
+        bg = interval.background_color
+    );
     bar.set_style(
         ProgressStyle::default_bar()
-            .template(format!("{{prefix}} {{bar:50.{color}/gray}} {{msg}}").as_str())
+            .template(template.as_str())
             .unwrap(),
     );
-    for _ in 0..seconds {
-        bar.inc(1);
-        let left = seconds_to_minutes_seconds(seconds - bar.position());
-        bar.set_message(left + " left");
-        thread::sleep(Duration::from_millis(1000));
-        if let Ok(input) = get_user_input() {
-            if input == '\u{3}' {
-                break;
+    bar.set_prefix(format!("{}: {}", interval.label, format_interval(len)));
+
+    for recv in rx.iter() {
+        let b = stdin.next();
+        if let Some(Ok(key)) = b {
+            match key {
+                termion::event::Key::Char('q') | termion::event::Key::Ctrl('c') => {
+                    bar.finish();
+                    return Err("User interrupted");
+                }
+                _ => {}
             }
         }
+        let pos = (recv - *start_timestamp).num_seconds() as u64;
+        bar.set_position(pos);
+        bar.set_message(format!("remaining {}", format_interval(len - pos)));
+
+        if pos < len {
+            continue;
+        }
+
+        bar.finish();
+        if play_sound().is_err() {
+            eprintln!("Failed to play sound.");
+        }
+        break;
     }
-    bar.set_message(message_done);
-    bar.finish();
-    play_sound();
+    Ok(())
 }
 
-fn seconds_to_minutes_seconds(seconds: u64) -> String {
-    let duration = Duration::from_secs(seconds);
-
+fn format_interval(remaining_seconds: u64) -> String {
     // Extract minutes and seconds
-    let minutes = duration.as_secs() / 60;
-    let remaining_seconds = duration.as_secs() % 60;
+    let minutes = remaining_seconds / 60;
+    let seconds = remaining_seconds % 60;
 
     // Format the string with abbreviation (m for minutes, s for seconds)
-    if minutes > 0 {
-        format!("{}min {}sec", minutes, remaining_seconds)
+    if minutes > 0 && seconds > 0 {
+        format!("{}m{}s", minutes, seconds)
+    } else if minutes > 0 {
+        format!("{}m", minutes) // Handle cases where only minutes are present
     } else {
-        format!("{}sec", remaining_seconds) // Handle cases where only seconds are present
+        format!("{}s", seconds) // Handle cases where only seconds are present
     }
 }
 
-fn play_sound() {
+fn play_sound() -> Result<(), Box<dyn Error>> {
     // Create a sink to play the sound
-    let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
-    let sink = Sink::try_new(&stream_handle).unwrap();
+    let (_stream, stream_handle) = rodio::OutputStream::try_default()?;
+
+    // Try to create a new sink
+    let sink = Sink::try_new(&stream_handle)?;
 
     // Generate a sine wave sound source
     let source = SineWave::new(440.0).take_duration(Duration::from_secs(1));
@@ -126,18 +174,6 @@ fn play_sound() {
 
     // Sleep for the duration of the sound
     thread::sleep(Duration::from_secs(1));
-}
 
-fn get_user_input() -> Result<char, std::io::Error> {
-    // Disable terminal echo
-    let mut mode = stdout().into_raw_mode()?;
-
-    // Get a single keystroke
-    let mut input = [0; 1];
-    io::stdin().read_exact(&mut input)?;
-
-    // Restore terminal echo
-    mode.flush()?;
-
-    Ok(input[0] as char)
+    Ok(())
 }
