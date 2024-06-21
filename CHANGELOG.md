@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the `tomato-clock-cli` project will be documented in this file.
+All notable changes to the `tomato-timer-cli` project will be documented in this file.
 
 ## v0.1.1 (2024-06-21)
 
