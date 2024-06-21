@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for considering contributing to the Tomato Clock CLI project! We appreciate your interest and support. This guide will help you get started with contributing to our project.
+Thank you for considering contributing to the Tomato Timer CLI project! We appreciate your interest and support. This guide will help you get started with contributing to our project.
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ Thank you for considering contributing to the Tomato Clock CLI project! We appre
 
 ## Getting Started
 
-To contribute to the Tomato Clock CLI project, please follow these steps:
+To contribute to the Tomato Timer CLI project, please follow these steps:
 
 1. Fork the repository on GitHub.
 2. Clone your forked repository to your local machine.
@@ -27,9 +27,9 @@ To contribute to the Tomato Clock CLI project, please follow these steps:
 
 ## Submitting Issues
 
-If you encounter any issues or bugs while using the Tomato Clock CLI, please follow these steps to submit an issue:
+If you encounter any issues or bugs while using the Tomato Timer CLI, please follow these steps to submit an issue:
 
-1. Go to the [issue tracker](https://github.com/your-username/tomato-clock-cli/issues) on GitHub.
+1. Go to the [issue tracker](https://github.com/your-username/tomato-Timer-cli/issues) on GitHub.
 2. Click on the "New Issue" button.
 3. Provide a clear and concise title for the issue.
 4. Describe the issue in detail, including steps to reproduce if applicable.
@@ -39,7 +39,7 @@ If you encounter any issues or bugs while using the Tomato Clock CLI, please fol
 
 ## Making Pull Requests
 
-To contribute code changes or new features to the Tomato Clock CLI, please follow these steps:
+To contribute code changes or new features to the Tomato Timer CLI, please follow these steps:
 
 1. Ensure that your local repository is up to date with the main repository.
 2. Create a new branch for your changes.
@@ -55,6 +55,6 @@ Please note that we have a Code of Conduct in place to ensure a positive and inc
 
 ## License
 
-The Tomato Clock CLI project is licensed under the [MIT License](https://opensource.org/licenses/MIT). By contributing to this project, you agree to license your contributions under the same license.
+The Tomato Timer CLI project is licensed under the [MIT License](https://opensource.org/licenses/MIT). By contributing to this project, you agree to license your contributions under the same license.
 
-We appreciate your contributions and look forward to your involvement in the Tomato Clock CLI project!
+We appreciate your contributions and look forward to your involvement in the Tomato Timer CLI project!
