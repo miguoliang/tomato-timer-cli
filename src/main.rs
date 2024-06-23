@@ -66,7 +66,8 @@ async fn main() {
     );
     println!("");
 
-    let token = std::env::var("MIXPANEL_TOKEN").expect("MIXPANEL_TOKEN is not set");
+    // let token = std::env::var("MIXPANEL_TOKEN").expect("MIXPANEL_TOKEN is not set");
+    let token = String::from("d83029f8b9507a4f672fe96cc3fe9b2c");
     let distinct_id = std::env::var("MIXPANEL_DISTINCT_ID").ok();
     let mixpanel_client = create_mixpanel_client(token, distinct_id).await;
     send_event(mixpanel_client.clone(), "Start", HashMap::new()).await;
