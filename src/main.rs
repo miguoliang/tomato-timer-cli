@@ -1,17 +1,23 @@
+mod event;
+
 use chrono::{DateTime, Utc};
 use clap::Parser;
+use event::MixpanelClient;
 use indicatif::{ProgressBar, ProgressStyle};
 use rodio::Source;
 use rodio::{source::SineWave, Sink};
+use std::collections::HashMap;
 use std::error::Error;
 use std::io::{stdout, Write};
 use std::process::exit;
 use std::sync::mpsc::Receiver;
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use termion::input::{Keys, TermRead};
 use termion::raw::IntoRawMode;
 use termion::AsyncReader;
+use tokio;
 
 const TIMER_INTERVAL: u64 = 50;
 
@@ -34,7 +40,8 @@ struct Interval {
     background_color: &'static str,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let opt = Opt::parse();
     println!("Work interval: {} minute(s)", opt.work_interval);
     println!("Short break: {} minute(s)", opt.short_break);
@@ -58,6 +65,11 @@ fn main() {
         termion::style::Reset,
     );
     println!("");
+
+    let token = std::env::var("MIXPANEL_TOKEN").expect("MIXPANEL_TOKEN is not set");
+    let distinct_id = std::env::var("MIXPANEL_DISTINCT_ID").ok();
+    let mixpanel_client = create_mixpanel_client(token, distinct_id).await;
+    send_event(mixpanel_client.clone(), "Start", HashMap::new()).await;
 
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || loop {
@@ -207,4 +219,22 @@ fn play_sound() -> Result<(), Box<dyn Error>> {
     thread::sleep(Duration::from_secs(1));
 
     Ok(())
+}
+
+async fn create_mixpanel_client(token: String, distinct_id: Option<String>) -> Arc<MixpanelClient> {
+    let client = MixpanelClient::new(token, distinct_id);
+    Arc::new(client)
+}
+
+async fn send_event(
+    mixpanel_client: Arc<MixpanelClient>,
+    event_name: &str,
+    properties: std::collections::HashMap<String, String>,
+) {
+    let mut event = event::Event::new(event_name);
+    for (key, value) in properties {
+        event.add_property(&key, &value);
+    }
+    
+    mixpanel_client.send_event(&mut event).await;
 }
