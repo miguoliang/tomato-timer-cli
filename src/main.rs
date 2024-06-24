@@ -43,9 +43,9 @@ struct Interval {
 #[tokio::main]
 async fn main() {
     let opt = Opt::parse();
-    println!("Work interval: {} minute(s)", opt.work_interval);
-    println!("Short break: {} minute(s)", opt.short_break);
-    println!("Long break: {} minute(s)", opt.long_break);
+    println!("💻 Work interval: {} minute(s)", opt.work_interval);
+    println!("🍵 Short break: {} minute(s)", opt.short_break);
+    println!("🍺 Long break: {} minute(s)", opt.long_break);
     println!(
         "Long break interval: {} work intervals",
         opt.long_break_interval
@@ -97,7 +97,7 @@ fn build_cycle(opt: Opt) -> Vec<Interval> {
     let mut cycle = std::vec::Vec::new();
     for i in 0..opt.long_break_interval {
         cycle.push(Interval {
-            label: "Work",
+            label: "💻",
             duration: opt.work_interval,
             foreground_color: "blue",
             background_color: "blue",
@@ -105,14 +105,14 @@ fn build_cycle(opt: Opt) -> Vec<Interval> {
 
         if i == opt.long_break_interval - 1 {
             cycle.push(Interval {
-                label: "Long Break",
+                label: "🍺",
                 duration: opt.long_break,
                 foreground_color: "orange",
                 background_color: "orange",
             });
         } else {
             cycle.push(Interval {
-                label: "Short Break",
+                label: "🍵",
                 duration: opt.short_break,
                 foreground_color: "green",
                 background_color: "green",
@@ -142,14 +142,14 @@ async fn run_interval(
             .template(template.as_str())
             .unwrap(),
     );
-    bar.set_prefix(format!("{}: {}", interval.label, format_interval(len)));
+    bar.set_prefix(format!("{} {}", interval.label, format_interval(len)));
     let mut pause_timestamp: Option<DateTime<Utc>> = None;
     for recv in rx.iter() {
         let b = stdin.next();
         if let Some(Ok(key)) = b {
             match key {
                 termion::event::Key::Char('q') | termion::event::Key::Ctrl('c') => {
-                    bar.finish();
+                    bar.abandon();
                     send_quit_event(mixpanel_client.clone()).await;
                     return Err("User interrupted");
                 }
