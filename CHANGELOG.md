@@ -2,7 +2,46 @@
 
 All notable changes to the `tomato-timer-cli` project will be documented in this file.
 
+## v0.1.3 (2024-06-24)
+
+### Chore
+
+ - <csr-id-177686ab6500704d5355a0e2a586b4edea0dc521/> Bump version to 0.1.3 and update dependencies
+ - <csr-id-1fe2d50281eb85a44c8de99d43b8d2ec48ff93a8/> Update work interval and break labels with emojis
+ - <csr-id-b2d4d5b6cf3c2046b788928cbae128e296018de6/> Add Mixpanel event tracking and update dependencies
+ - <csr-id-40d7163986eedf731da57917c278a3eb39616c06/> Add Mixpanel event tracking and update dependencies
+ - <csr-id-c8fcfd83be82f45a4b0935850a7fcfc4f284ebca/> Update dependencies and add Mixpanel event tracking
+ - <csr-id-93a1a712456231edde891b46aea9e7da83250468/> Update project name to Tomato Timer CLI in CONTRIBUTING.md and SECURITY.md
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 6 commits contributed to the release over the course of 3 calendar days.
+ - 3 days passed between releases.
+ - 6 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Bump version to 0.1.3 and update dependencies ([`177686a`](https://github.com/miguoliang/tomato-timer-cli/commit/177686ab6500704d5355a0e2a586b4edea0dc521))
+    - Update work interval and break labels with emojis ([`1fe2d50`](https://github.com/miguoliang/tomato-timer-cli/commit/1fe2d50281eb85a44c8de99d43b8d2ec48ff93a8))
+    - Add Mixpanel event tracking and update dependencies ([`b2d4d5b`](https://github.com/miguoliang/tomato-timer-cli/commit/b2d4d5b6cf3c2046b788928cbae128e296018de6))
+    - Add Mixpanel event tracking and update dependencies ([`40d7163`](https://github.com/miguoliang/tomato-timer-cli/commit/40d7163986eedf731da57917c278a3eb39616c06))
+    - Update dependencies and add Mixpanel event tracking ([`c8fcfd8`](https://github.com/miguoliang/tomato-timer-cli/commit/c8fcfd83be82f45a4b0935850a7fcfc4f284ebca))
+    - Update project name to Tomato Timer CLI in CONTRIBUTING.md and SECURITY.md ([`93a1a71`](https://github.com/miguoliang/tomato-timer-cli/commit/93a1a712456231edde891b46aea9e7da83250468))
+</details>
+
 ## v0.1.2 (2024-06-21)
+
+<csr-id-7047184de228f31b06737ebe98832f33fa017ae6/>
+<csr-id-35b38560eae6bdd4e400a1632116587e6106f410/>
+<csr-id-bfec101bc46c014a59d2a42c716565cac5def591/>
 
 ### Chore
 
@@ -14,7 +53,7 @@ All notable changes to the `tomato-timer-cli` project will be documented in this
 
 <csr-read-only-do-not-edit/>
 
- - 3 commits contributed to the release.
+ - 4 commits contributed to the release.
  - 3 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -25,6 +64,7 @@ All notable changes to the `tomato-timer-cli` project will be documented in this
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release tomato-timer-cli v0.1.2 ([`dfa4dc3`](https://github.com/miguoliang/tomato-timer-cli/commit/dfa4dc3574faa9547bae1248cbe09ae84c748e22))
     - Bump version to 0.1.2 ([`7047184`](https://github.com/miguoliang/tomato-timer-cli/commit/7047184de228f31b06737ebe98832f33fa017ae6))
     - Update project name in changelog ([`35b3856`](https://github.com/miguoliang/tomato-timer-cli/commit/35b38560eae6bdd4e400a1632116587e6106f410))
     - Update changelog ([`bfec101`](https://github.com/miguoliang/tomato-timer-cli/commit/bfec101bc46c014a59d2a42c716565cac5def591))
