@@ -22,14 +22,20 @@ use tokio;
 const TIMER_INTERVAL: u64 = 50;
 
 #[derive(Parser)]
+#[command(version)]
 struct Opt {
-    #[arg(short, long, default_value = "25")]
+    #[arg(short, long, default_value = "25", help = "Work interval in minutes")]
     work_interval: u64,
-    #[arg(short, long, default_value = "5")]
+    #[arg(short, long, default_value = "5", help = "Short break in minutes")]
     short_break: u64,
-    #[arg(short = 'L', long, default_value = "20")]
+    #[arg(
+        short = 'L',
+        long,
+        default_value = "20",
+        help = "Long break in minutes"
+    )]
     long_break: u64,
-    #[arg(short = 'I', long, default_value = "4")]
+    #[arg(short = 'I', long, default_value = "4", help = "Long break interval")]
     long_break_interval: u64,
 }
 
@@ -85,7 +91,10 @@ async fn main() {
     let mut stdin = termion::async_stdin().keys();
 
     for interval in cycle.iter().cycle() {
-        if run_interval(mixpanel_client.clone(), interval, &rx, &mut stdin).await.is_err() {
+        if run_interval(mixpanel_client.clone(), interval, &rx, &mut stdin)
+            .await
+            .is_err()
+        {
             stdout.flush().unwrap();
             drop(stdout);
             exit(0);
