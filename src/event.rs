@@ -51,8 +51,8 @@ impl MixpanelClient {
             Ok(resp) => {
                 if resp.status().is_success() {
                     match resp.text().await {
-                        Ok(body) => println!("Event sent successfully. Response body: {:?}", body),
                         Err(err) => eprintln!("Failed to read response body: {}", err),
+                        _ => {}
                     }
                 } else {
                     eprintln!("Failed to send event: HTTP {}", resp.status());

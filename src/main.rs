@@ -66,11 +66,10 @@ async fn main() {
     );
     println!("");
 
-    // let token = std::env::var("MIXPANEL_TOKEN").expect("MIXPANEL_TOKEN is not set");
     let token = String::from("d83029f8b9507a4f672fe96cc3fe9b2c");
     let distinct_id = std::env::var("MIXPANEL_DISTINCT_ID").ok();
     let mixpanel_client = create_mixpanel_client(token, distinct_id).await;
-    send_event(mixpanel_client.clone(), "Start", HashMap::new()).await;
+    send_start_event(mixpanel_client.clone(), &opt).await;
 
     let (tx, rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || loop {
@@ -86,7 +85,7 @@ async fn main() {
     let mut stdin = termion::async_stdin().keys();
 
     for interval in cycle.iter().cycle() {
-        if run_interval(interval, &rx, &mut stdin).is_err() {
+        if run_interval(mixpanel_client.clone(), interval, &rx, &mut stdin).await.is_err() {
             stdout.flush().unwrap();
             drop(stdout);
             exit(0);
@@ -123,7 +122,8 @@ fn build_cycle(opt: Opt) -> Vec<Interval> {
     cycle
 }
 
-fn run_interval(
+async fn run_interval(
+    mixpanel_client: Arc<MixpanelClient>,
     interval: &Interval,
     rx: &Receiver<DateTime<Utc>>,
     stdin: &mut Keys<AsyncReader>,
@@ -143,17 +143,25 @@ fn run_interval(
             .unwrap(),
     );
     bar.set_prefix(format!("{}: {}", interval.label, format_interval(len)));
-
+    let mut pause_timestamp: Option<DateTime<Utc>> = None;
     for recv in rx.iter() {
         let b = stdin.next();
         if let Some(Ok(key)) = b {
             match key {
                 termion::event::Key::Char('q') | termion::event::Key::Ctrl('c') => {
                     bar.finish();
+                    send_quit_event(mixpanel_client.clone()).await;
                     return Err("User interrupted");
                 }
                 termion::event::Key::Char('p') => {
                     paused = !paused;
+                    if paused {
+                        pause_timestamp = Some(Utc::now());
+                    } else {
+                        let pause = pause_timestamp.unwrap();
+                        let resume = Utc::now();
+                        send_pause_event(mixpanel_client.clone(), pause, resume).await;
+                    }
                 }
                 _ => {}
             }
@@ -236,6 +244,33 @@ async fn send_event(
     for (key, value) in properties {
         event.add_property(&key, &value);
     }
-    
+
     mixpanel_client.send_event(&mut event).await;
+}
+
+async fn send_start_event(mixpanel_client: Arc<MixpanelClient>, opt: &Opt) {
+    let mut properties = HashMap::new();
+    properties.insert("work_interval".to_string(), opt.work_interval.to_string());
+    properties.insert("short_break".to_string(), opt.short_break.to_string());
+    properties.insert("long_break".to_string(), opt.long_break.to_string());
+    properties.insert(
+        "long_break_interval".to_string(),
+        opt.long_break_interval.to_string(),
+    );
+    send_event(mixpanel_client, "start", properties).await;
+}
+
+async fn send_quit_event(mixpanel_client: Arc<MixpanelClient>) {
+    send_event(mixpanel_client, "quit", HashMap::new()).await;
+}
+
+async fn send_pause_event(
+    mixpanel_client: Arc<MixpanelClient>,
+    pause: DateTime<Utc>,
+    resume: DateTime<Utc>,
+) {
+    let mut properties = HashMap::new();
+    properties.insert("pause".to_string(), pause.to_rfc3339());
+    properties.insert("resume".to_string(), resume.to_rfc3339());
+    send_event(mixpanel_client, "pause", properties).await;
 }
