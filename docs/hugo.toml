@@ -2,6 +2,7 @@ baseURL = 'https://miguoliang.github.io/tomato-clock-cli/'
 languageCode = 'en-us'
 title = 'Tomato Clock CLI'
 theme = 'hugo-book'
+googleAnalytics = "G-P7JB73R9VH"
 
 [params]
   bookFavicon = 'favicon.ico'
@@ -9,3 +10,10 @@ theme = 'hugo-book'
 
 [markup.goldmark.renderer]
   unsafe = true
+
+[menu]
+# [[menu.before]]
+[[menu.after]]
+  name = "Github"
+  url = "https://github.com/miguoliang/tomato-clock-cli"
+  weight = 10
