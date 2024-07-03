@@ -1,6 +1,7 @@
 # Tomato Timer CLI
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=miguoliang_tomato-clock-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=miguoliang_tomato-clock-cli)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=miguoliang_tomato-clock-cli&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=miguoliang_tomato-clock-cli) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <img src="https://miguoliang.github.io/tomato-timer-cli/logo.png" alt="Tomato Timer CLI" height="100px">
 
