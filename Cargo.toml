@@ -15,6 +15,7 @@ repository = "https://github.com/miguoliang/tomato-timer-cli"
 homepage = "https://miguoliang.github.io/tomato-timer-cli/"
 readme = "README.md"
 categories = ["command-line-utilities"]
+authors = ["Mi Guoliang <boymgl@qq.com>"]
 
 [dependencies]
 chrono = "0.4.38"
@@ -28,4 +29,5 @@ strum = { version = "0.26.2", features = ["strum_macros"] }
 strum_macros = "0.26.4"
 termion = "4.0.0"
 tokio = { version = "1.38.0", features = ["full"] }
+toml = "0.8.14"
 uuid = { version = "1.8.0", features = ["v4"] }

@@ -12,8 +12,8 @@ use std::io::{stdout, Write};
 use std::process::exit;
 use std::sync::mpsc::Receiver;
 use std::sync::Arc;
-use std::thread;
 use std::time::Duration;
+use std::{fs, thread};
 use termion::input::{Keys, TermRead};
 use termion::raw::IntoRawMode;
 use termion::AsyncReader;
@@ -22,7 +22,26 @@ use tokio;
 const TIMER_INTERVAL: u64 = 50;
 
 #[derive(Parser)]
-#[command(version)]
+#[command(version, about, author, help_template = format!("
+{{usage}}
+  
+{{all-args}}
+
+{}Version:{} {{version}}
+{}Authors:{} {{author}}
+
+{{about}}
+
+{}Report Bugs:{} {}{}/issues{}
+
+Thanks for using! 😊
+", 
+termion::style::Bold, termion::style::Reset, 
+termion::style::Bold, termion::style::Reset,
+termion::style::Bold, termion::style::Reset,
+termion::style::Underline,
+get_repository_url("Cargo.toml").expect("Failed to get repository URL"),
+termion::style::Reset))]
 struct Opt {
     #[arg(short, long, default_value = "25", help = "Work interval in minutes")]
     work_interval: u64,
@@ -49,6 +68,7 @@ struct Interval {
 #[tokio::main]
 async fn main() {
     let opt = Opt::parse();
+
     println!("💻 Work interval: {} minute(s)", opt.work_interval);
     println!("🍵 Short break: {} minute(s)", opt.short_break);
     println!("🍺 Long break: {} minute(s)", opt.long_break);
@@ -282,4 +302,15 @@ async fn send_pause_event(
     properties.insert("pause".to_string(), pause.to_rfc3339());
     properties.insert("resume".to_string(), resume.to_rfc3339());
     send_event(mixpanel_client, "pause", properties).await;
+}
+
+fn get_repository_url(file_path: &str) -> Option<String> {
+    let cargo_toml = fs::read_to_string(file_path).ok()?;
+    let value: toml::Value = toml::from_str(&cargo_toml).ok()?;
+
+    value
+        .get("package")?
+        .get("repository")?
+        .as_str()
+        .map(|s| s.to_string())
 }
