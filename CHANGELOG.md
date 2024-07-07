@@ -4,6 +4,13 @@ All notable changes to the `tomato-timer-cli` project will be documented in this
 
 ## v0.1.4 (2024-07-07)
 
+<csr-id-c8b15b5e23792a52b55b9ffb907f30aef734c0b5/>
+<csr-id-83ce6a37d513683fdb9c0fb20733b45a02353e85/>
+<csr-id-4d0e3b6d55eaf216971f20fabf9e74571642be4e/>
+<csr-id-d93f69a743dc44e43d943cc65459b8563f324959/>
+<csr-id-132b587d57c3a1cd875e1fe030197ef38437f6b6/>
+<csr-id-aa50a039c0ae83da025efb56fe61b84a6589f444/>
+
 ### Chore
 
  - <csr-id-c8b15b5e23792a52b55b9ffb907f30aef734c0b5/> Replace Termion with Crossterm for cross-platform compatibility.
@@ -17,7 +24,7 @@ All notable changes to the `tomato-timer-cli` project will be documented in this
 
 <csr-read-only-do-not-edit/>
 
- - 6 commits contributed to the release over the course of 4 calendar days.
+ - 7 commits contributed to the release over the course of 4 calendar days.
  - 12 days passed between releases.
  - 6 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -29,6 +36,7 @@ All notable changes to the `tomato-timer-cli` project will be documented in this
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release tomato-timer-cli v0.1.4 ([`43616be`](https://github.com/miguoliang/tomato-timer-cli/commit/43616beb3d52de12d6aa2e5919ba39990ee7a682))
     - Replace Termion with Crossterm for cross-platform compatibility. ([`c8b15b5`](https://github.com/miguoliang/tomato-timer-cli/commit/c8b15b5e23792a52b55b9ffb907f30aef734c0b5))
     - Update toml_edit dependency to version 0.22.14 ([`83ce6a3`](https://github.com/miguoliang/tomato-timer-cli/commit/83ce6a37d513683fdb9c0fb20733b45a02353e85))
     - Update introduction and features in documentation ([`4d0e3b6`](https://github.com/miguoliang/tomato-timer-cli/commit/4d0e3b6d55eaf216971f20fabf9e74571642be4e))
