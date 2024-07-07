@@ -2,21 +2,20 @@ mod event;
 
 use chrono::{DateTime, Utc};
 use clap::Parser;
+use crossterm::event::{Event, KeyCode, KeyEvent, KeyModifiers, poll, read};
+use crossterm::style::{Attribute, Color, SetAttribute, SetForegroundColor};
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use event::MixpanelClient;
 use indicatif::{ProgressBar, ProgressStyle};
 use rodio::Source;
 use rodio::{source::SineWave, Sink};
 use std::collections::HashMap;
 use std::error::Error;
-use std::io::{stdout, Write};
 use std::process::exit;
 use std::sync::mpsc::Receiver;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{fs, thread};
-use termion::input::{Keys, TermRead};
-use termion::raw::IntoRawMode;
-use termion::AsyncReader;
 use tokio;
 
 const TIMER_INTERVAL: u64 = 50;
@@ -36,12 +35,12 @@ const TIMER_INTERVAL: u64 = 50;
 
 Thanks for using! 😊
 ", 
-termion::style::Bold, termion::style::Reset, 
-termion::style::Bold, termion::style::Reset,
-termion::style::Bold, termion::style::Reset,
-termion::style::Underline,
+crossterm::style::Attribute::Bold, crossterm::style::Attribute::Reset,
+crossterm::style::Attribute::Bold, crossterm::style::Attribute::Reset,
+crossterm::style::Attribute::Bold, crossterm::style::Attribute::Reset,
+crossterm::style::Attribute::Underlined,
 get_repository_url("Cargo.toml").expect("Failed to get repository URL"),
-termion::style::Reset))]
+crossterm::style::Attribute::Reset))]
 struct Opt {
     #[arg(short, long, default_value = "25", help = "Work interval in minutes")]
     work_interval: u64,
@@ -80,15 +79,15 @@ async fn main() {
     println!("");
     println!(
         "Press {}Ctrl+C{} or {}Q{} to stop the timer",
-        termion::style::Bold,
-        termion::style::Reset,
-        termion::style::Bold,
-        termion::style::Reset,
+        Attribute::Bold,
+        Attribute::Reset,
+        Attribute::Bold,
+        Attribute::Reset,
     );
     println!(
         "Press {}P{} to pause or resume a timer\n",
-        termion::style::Bold,
-        termion::style::Reset,
+        Attribute::Bold,
+        Attribute::Reset,
     );
     println!("");
 
@@ -106,20 +105,18 @@ async fn main() {
 
     let cycle = build_cycle(opt);
 
-    let mut stdout = stdout().lock().into_raw_mode().unwrap();
-
-    let mut stdin = termion::async_stdin().keys();
+    enable_raw_mode().expect("Failed to enable raw mode");
 
     for interval in cycle.iter().cycle() {
-        if run_interval(mixpanel_client.clone(), interval, &rx, &mut stdin)
+        if run_interval(mixpanel_client.clone(), interval, &rx)
             .await
             .is_err()
         {
-            stdout.flush().unwrap();
-            drop(stdout);
+            disable_raw_mode().expect("Failed to disable raw mode");
             exit(0);
         }
     }
+    disable_raw_mode().expect("Failed to disable raw mode");
 }
 
 fn build_cycle(opt: Opt) -> Vec<Interval> {
@@ -155,7 +152,6 @@ async fn run_interval(
     mixpanel_client: Arc<MixpanelClient>,
     interval: &Interval,
     rx: &Receiver<DateTime<Utc>>,
-    stdin: &mut Keys<AsyncReader>,
 ) -> Result<(), &'static str> {
     let len = interval.duration * 60;
     let mut start_timestamp = Utc::now();
@@ -174,25 +170,37 @@ async fn run_interval(
     bar.set_prefix(format!("{} {}", interval.label, format_interval(len)));
     let mut pause_timestamp: Option<DateTime<Utc>> = None;
     for recv in rx.iter() {
-        let b = stdin.next();
-        if let Some(Ok(key)) = b {
-            match key {
-                termion::event::Key::Char('q') | termion::event::Key::Ctrl('c') => {
-                    bar.abandon();
-                    send_quit_event(mixpanel_client.clone()).await;
-                    return Err("User interrupted");
-                }
-                termion::event::Key::Char('p') => {
-                    paused = !paused;
-                    if paused {
-                        pause_timestamp = Some(Utc::now());
-                    } else {
-                        let pause = pause_timestamp.unwrap();
-                        let resume = Utc::now();
-                        send_pause_event(mixpanel_client.clone(), pause, resume).await;
+        if poll(Duration::from_millis(TIMER_INTERVAL)).unwrap() {
+            if let Event::Key(KeyEvent {
+                code,
+                modifiers,
+                state: _,
+                kind: _,
+            }) = read().unwrap()
+            {
+                match code {
+                    KeyCode::Char('c') if modifiers.contains(KeyModifiers::CONTROL) => {
+                        bar.abandon();
+                        send_quit_event(mixpanel_client.clone()).await;
+                        return Err("User interrupted");
                     }
+                    KeyCode::Char('q') | KeyCode::Esc => {
+                        bar.abandon();
+                        send_quit_event(mixpanel_client.clone()).await;
+                        return Err("User interrupted");
+                    }
+                    KeyCode::Char('p') => {
+                        paused = !paused;
+                        if paused {
+                            pause_timestamp = Some(Utc::now());
+                        } else {
+                            let pause = pause_timestamp.unwrap();
+                            let resume = Utc::now();
+                            send_pause_event(mixpanel_client.clone(), pause, resume).await;
+                        }
+                    }
+                    _ => {}
                 }
-                _ => {}
             }
         }
 
@@ -200,9 +208,9 @@ async fn run_interval(
             start_timestamp += Duration::from_millis(TIMER_INTERVAL);
             bar.set_message(format!(
                 "{}{}Paused{}",
-                termion::style::Bold,
-                termion::color::Fg(termion::color::Red),
-                termion::style::Reset
+                SetAttribute(Attribute::Bold),
+                SetForegroundColor(Color::Red),
+                Attribute::Reset
             ));
             continue;
         }

@@ -1,7 +1,7 @@
 [package]
 description = "The Tomato Timer CLI is a command-line tool designed to help you manage your time effectively using the Pomodoro Technique. With this tool, you can break your work into focused intervals called \"pomodoros\" and take short breaks in between. This technique helps improve productivity and maintain focus throughout your work sessions."
 name = "tomato-timer-cli"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 license = "MIT"
 keywords = [
@@ -20,6 +20,7 @@ authors = ["Mi Guoliang <boymgl@qq.com>"]
 [dependencies]
 chrono = "0.4.38"
 clap = { version = "4.5.6", features = ["derive"] }
+crossterm = "0.27.0"
 indicatif = { version = "0.17.8", features = ["rayon"] }
 reqwest = { version = "0.12.5", features = ["json"] }
 rodio = "0.18.1"
@@ -27,7 +28,6 @@ serde = { version = "1.0.203", features = ["derive"] }
 serde_json = "1.0.117"
 strum = { version = "0.26.2", features = ["strum_macros"] }
 strum_macros = "0.26.4"
-termion = "4.0.0"
 tokio = { version = "1.38.0", features = ["full"] }
 toml = "0.8.14"
 uuid = { version = "1.8.0", features = ["v4"] }
