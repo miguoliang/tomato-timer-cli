@@ -30,6 +30,7 @@ The Tomato Timer CLI is a command-line tool designed to help you manage your tim
 - Set custom durations for pomodoros and breaks
 - Track your progress with a visual timer
 - Receive notifications when a pomodoro or break ends unless no audio device found
+- Cross-platform support, including Windows, macOS, and Linux
 
 ## Perquisites
 
