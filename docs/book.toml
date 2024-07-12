@@ -1,0 +1,16 @@
+[book]
+authors = ["Mi Guoliang"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Tomato Timer CLI Documentation"
+description = "A tomato timer written in Rust and runs in terminal."
+
+[rust]
+edition = "2021"
+
+[output.html]
+smart-punctuation = true
+mathjax-support = true
+site-url = "/tomato-timer-cli/"
+git-repository-url = "https://miguoliang.github.io/tomato-timer-cli/tree/main/docs"
