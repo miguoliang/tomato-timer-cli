@@ -14,3 +14,4 @@ smart-punctuation = true
 mathjax-support = true
 site-url = "/tomato-timer-cli/"
 git-repository-url = "https://miguoliang.github.io/tomato-timer-cli/tree/main/docs"
+google-analytics = "G-P7JB73R9VH"
